@@ -1,7 +1,8 @@
 public class main {
 // COMENTARIO
     public static void main(String[] args) {
-        System.out.println("Paul Pringao");
+        Test x = new Test();
+        System.out.println("Jordi Pringao, mi número favorito es el " + x.getX());
     }
 
 }
