@@ -1,0 +1,10 @@
+# Ficheros de proyecto
+/.idea/
+
+
+# Ficheros compilados
+*.class
+
+
+# Ficheros output
+out/
