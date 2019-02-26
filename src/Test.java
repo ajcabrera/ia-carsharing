@@ -9,7 +9,7 @@ public class Test {
     String p;
 
     public Test() {
-        x = 0 ;
+        x = 10 ;
     }
 
     public Test(int x){
