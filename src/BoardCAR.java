@@ -1,5 +1,5 @@
 public class BoardCAR {
 
-    public BoardCAR() {}
+    public BoardCAR(int i) {}
 
 }
