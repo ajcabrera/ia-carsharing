@@ -1,3 +1,5 @@
+import IA.Comparticion.Usuario;
+import IA.Comparticion.Usuarios;
 import aima.search.framework.HeuristicFunction;
 import aima.search.framework.Problem;
 import aima.search.framework.Search;
@@ -8,13 +10,50 @@ import aima.search.informed.SimulatedAnnealingSearch;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.Vector;
 
 public class DemoCAR {
 
+    private static Vector<Usuario> conductores = new Vector<Usuario>();
+    private static Vector<Usuario> pasajeros = new Vector<Usuario>();
+
     public static void main(String[] args){
-        BoardCAR city =new BoardCAR(30);
-        HillClimbingSearch(city);
+        int nusuarios = Integer.parseInt(args[0]);
+        int ncond = Integer.parseInt(args[1]);
+        int seed = Integer.parseInt(args[2]);
+        Usuarios U = new Usuarios(nusuarios,ncond,seed);
+
+        Init(U);
+
+        BoardCAR city =new BoardCAR(pasajeros,ncond);
+        //HillClimbingSearch(city);
         //SimulatedAnnealingSearch(city);
+    }
+
+    public static void Cout(String s) {
+        System.out.println(s);
+    }
+
+    private static void Init(Usuarios U) {
+        int n = 1;
+        for (Usuario i:U) {
+            if (i.isConductor()) {
+                conductores.add(i);
+                Cout("Conductor: " + n + ", [" + i.getCoordOrigenX() + "," + i.getCoordOrigenY() + "]");
+                n++;
+            }
+            else {
+                pasajeros.add(i);
+            }
+        }
+    }
+
+    public static Usuario getConductor(int i) {
+        return conductores.get(i);
+    }
+
+    public static Usuario getPasajero(int i) {
+        return pasajeros.get(i);
     }
 
     private static void HillClimbingSearch(BoardCAR city) {
@@ -56,7 +95,6 @@ public class DemoCAR {
             String property = properties.getProperty(key);
             System.out.println(key + " : " + property);
         }
-
     }
 
     private static void printActions(List actions) {
