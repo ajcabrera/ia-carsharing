@@ -35,18 +35,10 @@ public class DemoCAR {
     }
 
     private static void Init(Usuarios U) {
-        int n = 1;
         for (Usuario i:U) {
-            if (i.isConductor()) {
-                conductores.add(i);
-                Cout("Conductor: " + n + ", [" + i.getCoordOrigenX() + "," + i.getCoordOrigenY() + "]");
-                n++;
-            }
-            else {
-                pasajeros.add(i);
-            }
+            if (i.isConductor()) conductores.add(i);
+            else pasajeros.add(i);
         }
-        Cout("END");
     }
 
     public static Usuario getConductor(int i) {
