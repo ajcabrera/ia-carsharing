@@ -8,23 +8,27 @@ import java.util.Vector;
 
 public class BoardCAR {
 
-    private Vector<ArrayList<Usuario>> caminos = new Vector<ArrayList<Usuario>> ();
-    private Vector<Integer> distance = new Vector<Integer> ();
+    private Vector<ArrayList<Usuario>> caminos;
+    private Vector<Short> distance;
 
     public static String SWAP = "swap";
     public static String MOVE = "move";
 
 
     public BoardCAR(Vector<Usuario> pasajeros, int ncond) {
+        caminos = new Vector<ArrayList<Usuario>>();
         for (int i = 0; i < ncond; i++) {
             caminos.add(new ArrayList<Usuario>());
         }
+        distance = new Vector<Short>();
         distance.setSize(ncond);
         EquitableInit(pasajeros,ncond);
         printBoard();
     }
 
-    public BoardCAR(Vector<ArrayList<Usuario>> oldCaminos, Vector<Integer> oldDistance) {
+    public BoardCAR(Vector<ArrayList<Usuario>> oldCaminos, Vector<Short> oldDistance) {
+        caminos = new Vector<ArrayList<Usuario>>();
+        distance = new Vector<Short>();
         distance.setSize(oldDistance.size());
         for (int i = 0; i < oldCaminos.size(); i++) {
             caminos.add(new ArrayList<Usuario>());
@@ -111,7 +115,7 @@ public class BoardCAR {
         return caminos;
     }
 
-    public Vector<Integer> getDistance() {
+    public Vector<Short> getDistance() {
         return distance;
     }
 

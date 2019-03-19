@@ -13,7 +13,7 @@ public class SuccessorFunctionCAR implements SuccessorFunction {
         ArrayList retval = new ArrayList();
         BoardCAR board = (BoardCAR) aState;
         Vector<ArrayList<Usuario>> oldCaminos = board.getCaminos();
-        Vector<Integer> oldDistance = board.getDistance();
+        Vector<Short> oldDistance = board.getDistance();
         HeuristicFunctionCAR hf = new HeuristicFunctionCAR();
         int ncond = board.getNumCond();
 
