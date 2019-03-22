@@ -1,0 +1,1 @@
+From board to Dijkstra maybe no need to recreate vectors.

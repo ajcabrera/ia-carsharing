@@ -1,6 +1,7 @@
 import IA.Comparticion.Usuario;
 import jdk.nashorn.internal.runtime.UserAccessorProperty;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 import static java.lang.Math.abs;
@@ -11,16 +12,15 @@ public class Node {
     private Vector<Usuario> car;
     private Vector<Usuario> remaining;
 
-    public Node(Usuario cond, Vector<Usuario> pasajeros) {
+    public Node(Usuario cond, ArrayList<Usuario> pasajeros) {
         pos = new Vector<Integer>(2);
-        pos.set(0, cond.getCoordOrigenX());
-        pos.set(1, cond.getCoordOrigenY());
+        pos.add(cond.getCoordOrigenX());
+        pos.add(cond.getCoordOrigenY());
         dist = 0;
         car = new Vector<Usuario>();
         remaining = new Vector<Usuario>(pasajeros.size());
-
         for (int i = 0; i < pasajeros.size(); i++) {
-            remaining.set(i,pasajeros.get(i));
+            remaining.add(pasajeros.get(i));
         }
     }
 
@@ -42,18 +42,18 @@ public class Node {
 
     //Dejar pasajero
     private Node dejarPasajero(Vector<Usuario> oldCar, Vector<Usuario> oldRemaining, short oldDist, Vector<Integer> oldPos, int dejado) {
-        Vector<Usuario> r = new Vector<Usuario>(oldRemaining.size());
+        Vector<Usuario> r = new Vector<Usuario>();
         for (int i = 0; i < oldRemaining.size(); i++)
-            r.set(i,oldRemaining.get(i));
+            r.add(oldRemaining.get(i));
 
-        Vector<Usuario> c = new Vector<Usuario>(oldCar.size()-1);
+        Vector<Usuario> c = new Vector<Usuario>();
         for (int i = 0; i < oldCar.size(); i++)
-            if (i != dejado) c.set(i,oldCar.get(i));
+            if (i != dejado) c.add(oldCar.get(i));
 
 
-        Vector<Integer> p = new Vector<Integer>(2);
-        p.set(0,oldCar.get(dejado).getCoordDestinoX());
-        p.set(1,oldCar.get(dejado).getCoordDestinoY());
+        Vector<Integer> p = new Vector<Integer>();
+        p.add(oldCar.get(dejado).getCoordDestinoX());
+        p.add(oldCar.get(dejado).getCoordDestinoY());
 
         short d = (short)(oldDist + computeDistance(p,oldPos));
 
@@ -63,19 +63,19 @@ public class Node {
 
     private Node cogerPasajero(Vector<Usuario> oldCar, Vector<Usuario> oldRemaining, short oldDist, Vector<Integer> oldPos, int cogido) {
 
-        Vector<Usuario> r = new Vector<Usuario>(oldRemaining.size()-1);
+        Vector<Usuario> r = new Vector<Usuario>();
         for (int i = 0; i < oldRemaining.size(); i++)
-            if (i != cogido) r.set(i,oldRemaining.get(i));
+            if (i != cogido) r.add(oldRemaining.get(i));
 
-        Vector<Usuario> c = new Vector<Usuario>(oldCar.size()+1);
+        Vector<Usuario> c = new Vector<Usuario>();
         for (int i = 0; i < oldCar.size(); i++)
-            c.set(i,oldCar.get(i));
-        c.set(oldCar.size(), oldRemaining.get(cogido));
+            c.add(oldCar.get(i));
+        c.add(oldRemaining.get(cogido));
 
 
-        Vector<Integer> p = new Vector<Integer>(2);
-        p.set(0,oldRemaining.get(cogido).getCoordOrigenX());
-        p.set(1,oldRemaining.get(cogido).getCoordOrigenY());
+        Vector<Integer> p = new Vector<Integer>();
+        p.add(oldRemaining.get(cogido).getCoordOrigenX());
+        p.add(oldRemaining.get(cogido).getCoordOrigenY());
 
         short d = (short)(oldDist + computeDistance(p,oldPos));
 
@@ -86,9 +86,9 @@ public class Node {
         Vector<Usuario> r = new Vector<Usuario> ();
         Vector<Usuario> c = new Vector<Usuario>();
 
-        Vector<Integer> p = new Vector<Integer>(2);
-        p.set(0,posDestino.get(0));
-        p.set(1,posDestino.get(1));
+        Vector<Integer> p = new Vector<Integer>();
+        p.add(posDestino.get(0));
+        p.add(posDestino.get(1));
 
         short d = (short)(oldDist + computeDistance(p,oldPos));
 
@@ -107,7 +107,6 @@ public class Node {
         Vector<Node> result = new Vector<Node>();
         for (int i = 0; i < car.size(); i++)
             result.add(dejarPasajero(car,remaining,dist,pos,i));
-
 
         if (car.size() < 2) {
             for (int i = 0; i < remaining.size(); i++)

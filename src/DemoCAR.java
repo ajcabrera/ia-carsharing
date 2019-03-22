@@ -25,9 +25,12 @@ public class DemoCAR {
 
         Init(U);
 
-        BoardCAR city =new BoardCAR(pasajeros,ncond);
+        BoardCAR city = new BoardCAR(pasajeros,conductores,pasajeros);
+
+        city.printBoard(true);
         //HillClimbingSearch(city);
-        //SimulatedAnnealingSearch(city);
+
+        SimulatedAnnealingSearch(city);
     }
 
     public static void Cout(String s) {
@@ -56,19 +59,21 @@ public class DemoCAR {
             Search search =  new HillClimbingSearch();
             SearchAgent agent = new SearchAgent(problem,search);
 
+
             System.out.println();
             printActions(agent.getActions());
             printInstrumentation(agent.getInstrumentation());
         } catch (Exception e) {
+            Cout("Exception");
             e.printStackTrace();
         }
     }
-    /*
+
     private static void SimulatedAnnealingSearch(BoardCAR TSPB) {
         System.out.println("\nTSP Simulated Annealing  -->");
         try {
             Problem problem =  new Problem(TSPB,new SuccessorFunctionCAR(), new GoalTestCAR(),new HeuristicFunctionCAR());
-            SimulatedAnnealingSearch search =  new SimulatedAnnealingSearch(2000,100,5,0.001);
+            SimulatedAnnealingSearch search =  new SimulatedAnnealingSearch(1000,100,5,0.001);
             //search.traceOn();
             SearchAgent agent = new SearchAgent(problem,search);
 
@@ -79,7 +84,6 @@ public class DemoCAR {
             e.printStackTrace();
         }
     }
-    */
 
     private static void printInstrumentation(Properties properties) {
         Iterator keys = properties.keySet().iterator();
