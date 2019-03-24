@@ -1,22 +1,12 @@
+import java.util.Vector;
+
 public class Test {
 
-    int x;
+    public static void main(String[] args){
 
-    public void setP(String p) {
-        this.p = p;
-    }
+        String s = "hola";
+        String a = "hola";
+        System.out.println(s == a);
 
-    String p;
-
-    public Test() {
-        x = 10 ;
-    }
-
-    public Test(int x){
-        this.x = x;
-    }
-
-    public int getX(){
-        return this.x;
     }
 }

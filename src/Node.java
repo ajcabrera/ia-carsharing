@@ -2,6 +2,7 @@ import IA.Comparticion.Usuario;
 import jdk.nashorn.internal.runtime.UserAccessorProperty;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Vector;
 
 import static java.lang.Math.abs;
@@ -122,5 +123,4 @@ public class Node {
     private short computeDistance(Vector<Integer> p1, Vector<Integer> p2) {
         return (short)(abs(p1.get(0) - p2.get(0)) + abs(p1.get(1) - p2.get(1)));
     }
-
 }

@@ -25,12 +25,12 @@ public class DemoCAR {
 
         Init(U);
 
-        BoardCAR city = new BoardCAR(pasajeros,conductores,pasajeros);
+        BoardCAR city = new BoardCAR(pasajeros,conductores);
 
-        city.printBoard(true);
-        //HillClimbingSearch(city);
+        city.printBoard();
+        HillClimbingSearch(city);
 
-        SimulatedAnnealingSearch(city);
+        //SimulatedAnnealingSearch(city);
     }
 
     public static void Cout(String s) {
@@ -55,14 +55,21 @@ public class DemoCAR {
     private static void HillClimbingSearch(BoardCAR city) {
         System.out.println("\nTSP HillClimbing  -->");
         try {
+            long start_time = System.nanoTime();
             Problem problem =  new Problem(city,new SuccessorFunctionCAR(), new GoalTestCAR(),new HeuristicFunctionCAR());
             Search search =  new HillClimbingSearch();
             SearchAgent agent = new SearchAgent(problem,search);
-
+            long end_time = System.nanoTime();
+            double difference = (end_time-start_time) / 1e6;
 
             System.out.println();
             printActions(agent.getActions());
             printInstrumentation(agent.getInstrumentation());
+
+            BoardCAR last = (BoardCAR) search.getGoalState();
+            System.out.println(last.heuristicValue());
+            last.printBoard();
+            System.out.println("\n\nTime elapsed: " + difference + "milliseconds, which are " + (difference/1e3) + " seconds.");
         } catch (Exception e) {
             Cout("Exception");
             e.printStackTrace();
