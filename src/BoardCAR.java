@@ -26,6 +26,21 @@ public class BoardCAR {
         }
     }
 
+    private void thomasMethod(Vector<Usuario> passengers, Vector<Usuario> drivers) {
+        int n = drivers.size()/2;
+        int each = passengers.size()/n;
+
+        for (int i = 0; i < drivers.size(); i++) {
+            itineraries.add(new ArrayList<>());
+            itineraries.get(i).add(drivers.get(i));
+        }
+        for (int i = passengers.size()-1; i >= 0; i--) {
+                itineraries.get(i%n+n).add(passengers.get(i));
+                itineraries.get(i%n+n).add(passengers.get(i));
+        }
+        for (int i = 0; i < drivers.size(); i++) itineraries.get(i).add(drivers.get(i));
+    }
+
     private void equitableInit(Vector<Usuario> passengers, Vector<Usuario> drivers) {
         int each = passengers.size()/drivers.size();
         int n = 0;
@@ -50,7 +65,7 @@ public class BoardCAR {
     }
 
     private void equitableRandomInit(Vector<Usuario> passengers, Vector<Usuario> drivers) {
-        Random rand = new Random(12);
+        Random rand = new Random(12); // Entrega random seed 12
         int each = passengers.size()/drivers.size();
         Vector<Integer> aux = new Vector<> ();
 
@@ -186,10 +201,10 @@ public class BoardCAR {
     }
 
     public double heuristicValue() {
-        return hf();
+        return hf43();
     }
-
-    private double hf() {
+    // con Random seed 12
+    private double hfEntrega() { // 9618 28
         double sum = 0;
         for (int i = 0; i < itineraries.size(); i++) {
             double dist = computeDistance(i);
@@ -198,7 +213,36 @@ public class BoardCAR {
         return sum;
     }
 
+    private double hf43() { // 9545 43
+        double sum = 0;
+        int ncond = getNumCond();
+        for (int i = 0; i < itineraries.size(); i++) {
+            double dist = computeDistance(i);
+            sum += (dist > 300 ? dist*500 : dist)*ncond;
+        }
+        return sum;
+    }
+
+    private double hfThomasMethod() { // 9545 43
+        double sum = 0;
+        int ncond = getNumCond();
+        for (int i = 0; i < itineraries.size(); i++) {
+            double dist = computeDistance(i);
+            if (dist < 200 || dist > 300) dist *= dist;
+            sum += dist;
+        }
+        return sum;
+    }
+
     // Auxiliary functions
+
+    private int getNumCond() {
+        int cont = 0;
+        for (int i = 0; i < itineraries.size(); i++) {
+            if (itineraries.get(i).size() > 0) cont++;
+        }
+        return cont;
+    }
 
     private int getDistance(int x1, int x2, int n) {
         int min = x1 > x2 ? x2 : x1;
@@ -272,7 +316,7 @@ public class BoardCAR {
             sum += dist;
             if (dist == 0) conductores++;
             if (dist > 300) contador++;
-            System.out.println(" Distance: " + dist + ", nbr Passengers: " + (itineraries.get(i).size()/2));
+            System.out.println(" Distance: " + dist + ", # Passengers: " + (itineraries.get(i).size()/2));
         }
         System.out.println("Distancia total: " + sum + ", conductores eliminados: " + conductores);
         System.out.println("above 300: " + contador);

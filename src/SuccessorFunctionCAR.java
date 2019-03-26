@@ -15,6 +15,9 @@ public class SuccessorFunctionCAR implements SuccessorFunction {
         BoardCAR board = (BoardCAR) aState;
         ArrayList<ArrayList<Usuario>> oldItineraries = board.getItineraries();
 
+        double heuristic = board.heuristicValue();
+
+        // Comentar los if heuristic value
 
         // swap Operator
         for (int ci = 0; ci < oldItineraries.size(); ci++) {
@@ -30,8 +33,11 @@ public class SuccessorFunctionCAR implements SuccessorFunction {
                                     done2.add(oldItineraries.get(cj).get(pj));
                                     BoardCAR newBoard = new BoardCAR(oldItineraries);
                                     newBoard.swapPassenger(ci, pi, cj, pj);
-                                    String s = BoardCAR.SWAP + " C" + ci + " P" + pi + " with C" + cj + " " + cj;
-                                    retval.add(new Successor(s, newBoard));
+
+                                    if (newBoard.heuristicValue() < heuristic) {
+                                        String s = BoardCAR.SWAP + " C" + ci + " P" + pi + " with C" + cj + " " + cj;
+                                        retval.add(new Successor(s, newBoard));
+                                    }
                                 }
 
                             }
@@ -40,6 +46,7 @@ public class SuccessorFunctionCAR implements SuccessorFunction {
                 }
             }
         }
+
         //System.out.println("size swap : " + retval.size());
         // move Operator
         for (int ci = 0; ci < oldItineraries.size(); ci++) {
@@ -52,8 +59,10 @@ public class SuccessorFunctionCAR implements SuccessorFunction {
                             BoardCAR newBoard = new BoardCAR(oldItineraries);
                             newBoard.movePassenger(ci, pi, cj);
 
-                            String s = BoardCAR.MOVE + " P" + pi + " from C" + ci + " to C" + cj;
-                            retval.add(new Successor(s, newBoard));
+                            if (newBoard.heuristicValue() < heuristic) {
+                                String s = BoardCAR.MOVE + " P" + pi + " from C" + ci + " to C" + cj;
+                                retval.add(new Successor(s, newBoard));
+                            }
                         }
                     }
                 }
@@ -68,8 +77,10 @@ public class SuccessorFunctionCAR implements SuccessorFunction {
                         BoardCAR newBoard = new BoardCAR(oldItineraries);
                         newBoard.movePassenger(ci, 0, cj);
 
-                        String s = BoardCAR.MOVECONDUCTOR + " C" + ci + " to C" + cj;
-                        retval.add(new Successor(s, newBoard));
+                        if (newBoard.heuristicValue() < heuristic) {
+                            String s = BoardCAR.MOVECONDUCTOR + " C" + ci + " to C" + cj;
+                            retval.add(new Successor(s, newBoard));
+                        }
                     }
                 }
             }
