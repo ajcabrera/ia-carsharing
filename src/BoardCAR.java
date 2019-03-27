@@ -13,11 +13,16 @@ public class BoardCAR {
 
     public static String cfg;
 
+    public static Vector<Usuario> passengers;
+    public static Vector<Usuario> drivers;
+
     public BoardCAR(Vector<Usuario> passengers, Vector<Usuario> drivers, String cfg) {
         itineraries = new ArrayList<>();
 
         equitableRandomInit(passengers,drivers);
         this.cfg = cfg;
+        this.passengers = passengers;
+        this.drivers = drivers;
     }
 
     public BoardCAR(ArrayList<ArrayList<Usuario>> oldItineraries) {
@@ -68,7 +73,7 @@ public class BoardCAR {
     }
 
     private void equitableRandomInit(Vector<Usuario> passengers, Vector<Usuario> drivers) {
-        Random rand = new Random(12); // Entrega random seed 12
+        Random rand = new Random(12);
         int each = passengers.size()/drivers.size();
         Vector<Integer> aux = new Vector<> ();
 
@@ -133,6 +138,7 @@ public class BoardCAR {
         Vector<Integer> CoordIni = new Vector<>(2);
         CoordIni.add(itineraries.get(cond).get(0).getCoordOrigenX());
         CoordIni.add(itineraries.get(cond).get(0).getCoordOrigenY());
+        car.add(itineraries.get(cond).get(0));
 
         Vector<Integer> CoordEnd = new Vector<>(2);
         CoordEnd.add(0);
@@ -148,17 +154,17 @@ public class BoardCAR {
                 CoordEnd.set(0,itineraries.get(cond).get(i).getCoordDestinoX());
                 CoordEnd.set(1,itineraries.get(cond).get(i).getCoordDestinoY());
                 car.remove(itineraries.get(cond).get(i));
-
             }
-
 
             if (car.size() < 2) {
                 int distOr = getDistance(CoordEnd.get(0),CoordIni.get(0),u.getCoordOrigenX()) + getDistance(CoordEnd.get(1),CoordIni.get(1),u.getCoordOrigenY());
                 if (distOr < minOr) {
                     minOr = distOr;
                     idxOr = i;
+
                     CoordIni.set(0,u.getCoordOrigenX());
                     CoordIni.set(1,u.getCoordOrigenY());
+
                     minFi = getDistance(CoordEnd.get(0),CoordIni.get(0),u.getCoordDestinoX()) + getDistance(CoordEnd.get(1),CoordIni.get(1),u.getCoordDestinoY());
                     idxFi = i;
                 }
@@ -171,14 +177,15 @@ public class BoardCAR {
                     minFi = distFi < minFi ? distFi : minFi;
                 }
             }
-            else if (solDistance > minFi + minOr) {
-                solDistance = minFi + minOr;
-                solIdxFi = idxFi;
-                solIdxOr = idxOr;
+            else {
+                if (solDistance > minFi + minOr) {
+                    solDistance = minFi + minOr;
+                    solIdxFi = idxFi;
+                    solIdxOr = idxOr;
+                }
                 minFi = 300;
                 minOr = 300;
             }
-
             CoordIni.set(0,CoordEnd.get(0));
             CoordIni.set(1,CoordEnd.get(1));
         }
@@ -206,10 +213,10 @@ public class BoardCAR {
     public double heuristicValue() {
         return hf43();
     }
-    // con Random seed 12
-    private double hfEntrega() { // 9618 28
+
+    private double hfEntrega() {
         double sum = 0;
-        for (int i = 0; i < itineraries.size(); i++) {
+        for (int i = 0; i < itineraries.size(); i++) { // 9618 28
             double dist = computeDistance(i);
             sum += dist > 295 ? dist*500 : dist;
         }
@@ -307,33 +314,42 @@ public class BoardCAR {
         int sum = 0;
         int conductores = 0;
         int contador = 0;
+        int aboveCarSize = 0;
 
         for (int i = 0; i < itineraries.size(); i++) {
-            Vector<Usuario> car = new Vector<>(2);
-            System.out.print("Conductor " + i + ": ");
-            for (int j = 0; j < itineraries.get(i).size(); j++) {
-                Usuario current = itineraries.get(i).get(j);
-                /*
-                if (car.indexOf(current) != -1) {
-                    System.out.print("[" + current.getCoordOrigenX() + "," + current.getCoordOrigenY() + "] ");
-                }
-                else {
-                    System.out.print("[" + current.getCoordDestinoX() + "," + current.getCoordDestinoY() + "] ");
-                    car.add(current);
-                }
-
-                String or = "[" + current.getCoordOrigenX() + "," + current.getCoordOrigenY() + "]";
-                String fi = "[" + current.getCoordDestinoX() + "," + current.getCoordDestinoY() + "]";
-                System.out.print(" (" + or + "," + fi + ") ");
-                */
+            if (itineraries.get(i).size() == 0) {
+                System.out.println("Condutor " + i + " not used");
+                conductores++;
             }
-            int dist = computeDistance(i);
-            sum += dist;
-            if (dist == 0) conductores++;
-            if (dist > 300) contador++;
-            System.out.println(" Distance: " + (double)dist/10 + " km, # Passengers: " + (itineraries.get(i).size()/2));
+            else {
+                Vector<Usuario> car = new Vector<>(2);
+                for (int j = 0; j < itineraries.get(i).size(); j++) {
+                    Usuario current = itineraries.get(i).get(j);
+                    if (car.indexOf(current) != -1) {
+                        // mode destino
+                        System.out.print(getUserIdentity(current) + "-[" + current.getCoordOrigenX() + "," + current.getCoordOrigenY() + "] ");
+                        car.remove(current);
+                    } else {
+                        // mode origen
+                        System.out.print(getUserIdentity(current) + "-[" + current.getCoordDestinoX() + "," + current.getCoordDestinoY() + "] ");
+                        car.add(current);
+                    }
+                    if (car.size() > 3) aboveCarSize++;
+                }
+                int dist = computeDistance(i);
+                sum += dist;
+                if (dist > 300) contador++;
+                System.out.println("  ---  Distance: " + (double) dist / 10 + " km, # Passengers: " + (itineraries.get(i).size() / 2));
+            }
         }
         System.out.println("Distancia total: " + (double)sum/10 + " km, conductores eliminados: " + conductores);
-        System.out.println("above 300: " + contador);
+        System.out.println("above 300: " + contador + ", car Size Exceeded: " + aboveCarSize);
+    }
+
+    private String getUserIdentity(Usuario u) {
+        int idx = passengers.indexOf(u);
+        if (idx != -1) return "P" + idx;
+        idx = drivers.indexOf(u);
+        return "C" + idx;
     }
 }
