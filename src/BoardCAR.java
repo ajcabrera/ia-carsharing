@@ -236,7 +236,7 @@ public class BoardCAR {
 
     // Auxiliary functions
 
-    private int getNumCond() {
+    public int getNumCond() {
         int cont = 0;
         for (int i = 0; i < itineraries.size(); i++) {
             if (itineraries.get(i).size() > 0) cont++;
