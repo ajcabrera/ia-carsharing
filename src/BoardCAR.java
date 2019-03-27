@@ -11,10 +11,13 @@ public class BoardCAR {
     public static String MOVE = "move";
     public static String MOVECONDUCTOR = "move conductor";
 
-    public BoardCAR(Vector<Usuario> passengers, Vector<Usuario> drivers) {
+    public static String cfg;
+
+    public BoardCAR(Vector<Usuario> passengers, Vector<Usuario> drivers, String cfg) {
         itineraries = new ArrayList<>();
 
         equitableRandomInit(passengers,drivers);
+        this.cfg = cfg;
     }
 
     public BoardCAR(ArrayList<ArrayList<Usuario>> oldItineraries) {
@@ -236,6 +239,18 @@ public class BoardCAR {
 
     // Auxiliary functions
 
+    public String getCFG() {
+        return cfg;
+    }
+
+    public ArrayList<Integer> getNumVacios() {
+        ArrayList<Integer> result = new ArrayList<>();
+        for (int i = 0; i < itineraries.size(); i++) {
+            if (itineraries.get(i).size() == 2) result.add(i);
+        }
+        return result;
+    }
+
     public int getNumCond() {
         int cont = 0;
         for (int i = 0; i < itineraries.size(); i++) {
@@ -316,9 +331,9 @@ public class BoardCAR {
             sum += dist;
             if (dist == 0) conductores++;
             if (dist > 300) contador++;
-            System.out.println(" Distance: " + dist + ", # Passengers: " + (itineraries.get(i).size()/2));
+            System.out.println(" Distance: " + (double)dist/10 + " km, # Passengers: " + (itineraries.get(i).size()/2));
         }
-        System.out.println("Distancia total: " + sum + ", conductores eliminados: " + conductores);
+        System.out.println("Distancia total: " + (double)sum/10 + " km, conductores eliminados: " + conductores);
         System.out.println("above 300: " + contador);
     }
 }

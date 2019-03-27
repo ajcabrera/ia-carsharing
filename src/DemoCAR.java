@@ -25,12 +25,19 @@ public class DemoCAR {
 
         Init(U);
 
-        BoardCAR city = new BoardCAR(pasajeros,conductores);
+        BoardCAR city = new BoardCAR(pasajeros,conductores, args[4]);
 
         city.printBoard();
-        //HillClimbingSearch(city);
+        if(args[3].equals("HC")) HillClimbingSearch(city);
+        else if(args[3].equals("SA")) {
+            int steps = Integer.valueOf(args[5]);
+            int stiter = Integer.valueOf(args[6]);
+            int k = Integer.valueOf(args[7]);
+            double lamb = Double.valueOf(args[8]);
 
-        SimulatedAnnealingSearch(city);
+            SimulatedAnnealingSearch(city,steps,stiter,k,lamb);
+        }
+        else System.out.println("Select SA or HC");
     }
 
     public static void Cout(String s) {
@@ -76,20 +83,20 @@ public class DemoCAR {
         }
     }
 
-    private static void SimulatedAnnealingSearch(BoardCAR TSPB) {
+    private static void SimulatedAnnealingSearch(BoardCAR TSPB,int steps, int stiter, int k, double lamb) {
         System.out.println("\nTSP Simulated Annealing  -->");
         try {
             long start_time = System.nanoTime();
-            Problem problem =  new Problem(TSPB,new SuccessorFunctionCAR(), new GoalTestCAR(),new HeuristicFunctionCAR());
-            SimulatedAnnealingSearch search =  new SimulatedAnnealingSearch(1,30,5,0.001);
+            Problem problem =  new Problem(TSPB,new SuccessorFunctionSA(), new GoalTestCAR(),new HeuristicFunctionCAR());
+            SimulatedAnnealingSearch search =  new SimulatedAnnealingSearch(steps,stiter,k,lamb);
             //search.traceOn();
             SearchAgent agent = new SearchAgent(problem,search);
             long end_time = System.nanoTime();
             double difference = (end_time-start_time) / 1e6;
 
             System.out.println();
-            printActions(agent.getActions());
-            printInstrumentation(agent.getInstrumentation());
+            //printActions(agent.getActions());
+            //printInstrumentation(agent.getInstrumentation());
 
             BoardCAR last = (BoardCAR) search.getGoalState();
             System.out.println(last.heuristicValue());
