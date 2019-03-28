@@ -19,7 +19,8 @@ public class BoardCAR {
     public BoardCAR(Vector<Usuario> passengers, Vector<Usuario> drivers, String cfg) {
         itineraries = new ArrayList<>();
 
-        equitableRandomInit(passengers,drivers);
+        if (cfg.contains("E")) equitableRandomInit(passengers,drivers);
+        else if (cfg.contains("D")) thomasMethod(passengers, drivers);
         this.cfg = cfg;
         this.passengers = passengers;
         this.drivers = drivers;
@@ -211,10 +212,42 @@ public class BoardCAR {
     }
 
     public double heuristicValue() {
-        return hf43();
+        return hfAntonio3();
     }
 
-    private double hfEntrega() {
+    private double hfAntonio() { // (SMRE: 992.8 - 37) (lo demás es inutil)
+        double sum = 0;
+        int ncond = getNumCond();
+        for (int i = 0; i < itineraries.size(); i++) {
+            double dist = computeDistance(i);
+            sum += (dist > 300 ? 4096 : dist/10);
+        }
+        return sum*ncond;
+    }
+
+    private double hfAntonio2() { // (SMRE: 985.4 - 35) (MRE: 1207.2km - 45) (SMRD 1254.8 - 47) (MRD: 1313.1 - 48)
+        double sum = 0;
+        int ncond = getNumCond();
+        for (int i = 0; i < itineraries.size(); i++) {
+            double dist = computeDistance(i);
+            sum += (dist > 300 ? dist*10 : dist/10);
+        }
+        return sum*ncond;
+    }
+
+    private double hfAntonio3() { // (SMRE: 985.4 - 35) (MRE: 1207.2km - 45) (SMRD 1254.8 - 47) (MRD: 1313.1 - 48)
+        double sum = 0;
+        int ncond = getNumCond();
+        for (int i = 0; i < itineraries.size(); i++) {
+            double dist = computeDistance(i);
+            if( dist > 300 ) sum += dist * dist;
+            else if (dist < 70 ) sum += dist*(300-dist);
+            else sum += dist;
+        }
+        return sum*ncond;
+    }
+
+    private double hfEntrega() { // (SMRE: 993.7 - 27) (resto muy malos)
         double sum = 0;
         for (int i = 0; i < itineraries.size(); i++) { // 9618 28
             double dist = computeDistance(i);
@@ -223,7 +256,7 @@ public class BoardCAR {
         return sum;
     }
 
-    private double hf43() { // 9545 43
+    private double hf43() { // (SMRE: 996.4 - 37) (MRE: 1207.2 - 45) (SMRD: 1253 - 47) (MRD: 1328.1 - 49)
         double sum = 0;
         int ncond = getNumCond();
         for (int i = 0; i < itineraries.size(); i++) {
@@ -233,7 +266,7 @@ public class BoardCAR {
         return sum;
     }
 
-    private double hfThomasMethod() { // 9545 43
+    private double hfThomasMethod() { // (SMRE y MRE muy malos) (SMRD: ) (MRD: )
         double sum = 0;
         int ncond = getNumCond();
         for (int i = 0; i < itineraries.size(); i++) {
