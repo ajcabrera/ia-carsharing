@@ -66,8 +66,8 @@ public class DemoCAR {
             long end_time = System.nanoTime();
             double difference = (end_time-start_time) / 1e6;
 
-            //printActions(agent.getActions());
-            //printInstrumentation(agent.getInstrumentation());
+            printActions(agent.getActions());
+            printInstrumentation(agent.getInstrumentation());
 
             BoardCAR last = (BoardCAR) search.getGoalState();
 
@@ -80,7 +80,7 @@ public class DemoCAR {
 
 
             //System.out.println("\n\nTime elapsed: " + difference + "milliseconds, which are " + (difference/1e3) + " seconds.");
-            //last.printBoard();
+            last.printBoard();
 
         } catch (Exception e) {
             Cout("Exception");
@@ -100,8 +100,8 @@ public class DemoCAR {
             double difference = (end_time-start_time) / 1e6;
 
             System.out.println();
-            //printActions(agent.getActions());
-            //printInstrumentation(agent.getInstrumentation());
+            printActions(agent.getActions());
+            printInstrumentation(agent.getInstrumentation());
 
             BoardCAR last = (BoardCAR) search.getGoalState();
 
@@ -113,7 +113,7 @@ public class DemoCAR {
             System.out.println(iniKm + ";" + endKm + ";" + sol + ";" + result.get(2) + ";" + (difference/1e3));
 
             //System.out.println("\n\nTime elapsed: " + difference + "milliseconds, which are " + (difference/1e3) + " seconds.");
-            //last.printBoard();
+            last.printBoard();
 
         } catch (Exception e) {
             e.printStackTrace();
