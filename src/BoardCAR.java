@@ -1,5 +1,4 @@
 import IA.Comparticion.Usuario;
-import IA.Comparticion.Usuarios;
 
 import java.util.*;
 
@@ -16,14 +15,15 @@ public class BoardCAR {
     public static Vector<Usuario> passengers;
     public static Vector<Usuario> drivers;
 
-    public BoardCAR(Vector<Usuario> passengers, Vector<Usuario> drivers, String cfg) {
+    public BoardCAR(Vector<Usuario> passengersAt, Vector<Usuario> driversAt, String cfgAt) {
         itineraries = new ArrayList<>();
+        cfg = cfgAt;
+        passengers = passengersAt;
+        drivers = driversAt;
 
         if (cfg.contains("E")) equitableRandomInit(passengers,drivers);
         else if (cfg.contains("D")) thomasMethod(passengers, drivers);
-        this.cfg = cfg;
-        this.passengers = passengers;
-        this.drivers = drivers;
+
     }
 
     public BoardCAR(ArrayList<ArrayList<Usuario>> oldItineraries) {
@@ -212,7 +212,7 @@ public class BoardCAR {
     }
 
     public double heuristicValue() {
-        return hfAntonio3();
+        return hf43();
     }
 
     private double hfAntonio() { // (SMRE: 992.8 - 37) (lo demás es inutil)
@@ -313,6 +313,14 @@ public class BoardCAR {
 
     //(abs(p1.get(0) - p2.get(0)) + abs(p1.get(1) - p2.get(1)));
 
+    public int computeAllDistance() {
+        int sum = 0;
+        for (int i = 0; i < itineraries.size(); i++) {
+            sum += computeDistance(i);
+        }
+        return sum;
+    }
+
     private int computeDistance(int  c) {
         if (itineraries.get(c).size() == 0) return 0;
         Vector<Usuario> car = new Vector<>(2);
@@ -345,13 +353,15 @@ public class BoardCAR {
     public void printBoard() {
         System.out.println("\nBoard:\n");
         int sum = 0;
+        boolean bigInput = cfg.contains("C");
+
         int conductores = 0;
         int contador = 0;
         int aboveCarSize = 0;
 
         for (int i = 0; i < itineraries.size(); i++) {
             if (itineraries.get(i).size() == 0) {
-                System.out.println("Condutor " + i + " not used");
+                if (bigInput) System.out.println("Condutor " + i + " not used");
                 conductores++;
             }
             else {
@@ -360,11 +370,11 @@ public class BoardCAR {
                     Usuario current = itineraries.get(i).get(j);
                     if (car.indexOf(current) != -1) {
                         // mode destino
-                        System.out.print(getUserIdentity(current) + "-[" + current.getCoordOrigenX() + "," + current.getCoordOrigenY() + "] ");
+                        if (bigInput) System.out.print(getUserIdentity(current) + "-[" + current.getCoordOrigenX() + "," + current.getCoordOrigenY() + "] ");
                         car.remove(current);
                     } else {
                         // mode origen
-                        System.out.print(getUserIdentity(current) + "-[" + current.getCoordDestinoX() + "," + current.getCoordDestinoY() + "] ");
+                        if (bigInput) System.out.print(getUserIdentity(current) + "-[" + current.getCoordDestinoX() + "," + current.getCoordDestinoY() + "] ");
                         car.add(current);
                     }
                     if (car.size() > 3) aboveCarSize++;
@@ -372,11 +382,46 @@ public class BoardCAR {
                 int dist = computeDistance(i);
                 sum += dist;
                 if (dist > 300) contador++;
-                System.out.println("  ---  Distance: " + (double) dist / 10 + " km, # Passengers: " + (itineraries.get(i).size() / 2));
+                if (bigInput) System.out.println("  ---  Distance: " + (double) dist / 10 + " km, # Passengers: " + (itineraries.get(i).size() / 2));
             }
         }
         System.out.println("Distancia total: " + (double)sum/10 + " km, conductores eliminados: " + conductores);
         System.out.println("above 300: " + contador + ", car Size Exceeded: " + aboveCarSize);
+    }
+
+    public ArrayList<Integer> getInfo() {
+        int sum = 0;
+
+        int conductores = 0;
+        int contador = 0;
+        int aboveCarSize = 0;
+
+        for (int i = 0; i < itineraries.size(); i++) {
+            if (itineraries.get(i).size() == 0) {
+                conductores++;
+            } else {
+                Vector<Usuario> car = new Vector<>(2);
+                for (int j = 0; j < itineraries.get(i).size(); j++) {
+                    Usuario current = itineraries.get(i).get(j);
+                    if (car.indexOf(current) != -1) {
+                        // mode destino
+                        car.remove(current);
+                    } else {
+                        // mode origen
+                        car.add(current);
+                    }
+                    if (car.size() > 3) aboveCarSize++;
+                }
+                int dist = computeDistance(i);
+                sum += dist;
+                if (dist > 300) contador++;
+            }
+        }
+        ArrayList<Integer> result = new ArrayList<>();
+        result.add(sum);
+        result.add(contador+aboveCarSize);
+        result.add(conductores);
+        return result;
     }
 
     private String getUserIdentity(Usuario u) {

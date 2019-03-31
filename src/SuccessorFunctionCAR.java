@@ -1,12 +1,9 @@
 import IA.Comparticion.Usuario;
-import aima.search.framework.HeuristicFunction;
 import aima.search.framework.Successor;
 import aima.search.framework.SuccessorFunction;
 
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.List;
-import java.util.Vector;
 
 public class SuccessorFunctionCAR implements SuccessorFunction {
     @SuppressWarnings("unchecked")

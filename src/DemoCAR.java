@@ -7,10 +7,7 @@ import aima.search.framework.SearchAgent;
 import aima.search.informed.HillClimbingSearch;
 import aima.search.informed.SimulatedAnnealingSearch;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
-import java.util.Vector;
+import java.util.*;
 
 public class DemoCAR {
 
@@ -26,16 +23,16 @@ public class DemoCAR {
         Init(U);
 
         BoardCAR city = new BoardCAR(pasajeros,conductores, args[4]);
+        int distIni = city.computeAllDistance();
 
-        city.printBoard();
-        if(args[3].equals("HC")) HillClimbingSearch(city);
+        if(args[3].equals("HC")) HillClimbingSearch(city,distIni);
         else if(args[3].equals("SA")) {
             int steps = Integer.valueOf(args[5]);
             int stiter = Integer.valueOf(args[6]);
             int k = Integer.valueOf(args[7]);
             double lamb = Double.valueOf(args[8]);
 
-            SimulatedAnnealingSearch(city,steps,stiter,k,lamb);
+            SimulatedAnnealingSearch(city,steps,stiter,k,lamb, distIni);
         }
         else System.out.println("Select SA or HC");
     }
@@ -59,7 +56,7 @@ public class DemoCAR {
         return pasajeros.get(i);
     }
 
-    private static void HillClimbingSearch(BoardCAR city) {
+    private static void HillClimbingSearch(BoardCAR city, int ini) {
         System.out.println("\nTSP HillClimbing  -->");
         try {
             long start_time = System.nanoTime();
@@ -69,21 +66,29 @@ public class DemoCAR {
             long end_time = System.nanoTime();
             double difference = (end_time-start_time) / 1e6;
 
-            System.out.println();
-            printActions(agent.getActions());
-            printInstrumentation(agent.getInstrumentation());
+            //printActions(agent.getActions());
+            //printInstrumentation(agent.getInstrumentation());
 
             BoardCAR last = (BoardCAR) search.getGoalState();
-            System.out.println(last.heuristicValue());
-            last.printBoard();
-            System.out.println("\n\nTime elapsed: " + difference + "milliseconds, which are " + (difference/1e3) + " seconds.");
+
+            ArrayList<Integer> result = last.getInfo(); // result = distFinal, sol, conductores
+
+            double iniKm = (double)ini/10;
+            double endKm = (double)result.get(0)/10;
+            boolean sol = result.get(1).equals(0);
+            System.out.println(iniKm + ";" + endKm + ";" + sol + ";" + result.get(2) + ";" + (difference/1e3));
+
+
+            //System.out.println("\n\nTime elapsed: " + difference + "milliseconds, which are " + (difference/1e3) + " seconds.");
+            //last.printBoard();
+
         } catch (Exception e) {
             Cout("Exception");
             e.printStackTrace();
         }
     }
 
-    private static void SimulatedAnnealingSearch(BoardCAR TSPB,int steps, int stiter, int k, double lamb) {
+    private static void SimulatedAnnealingSearch(BoardCAR TSPB,int steps, int stiter, int k, double lamb, int ini) {
         System.out.println("\nTSP Simulated Annealing  -->");
         try {
             long start_time = System.nanoTime();
@@ -99,9 +104,17 @@ public class DemoCAR {
             //printInstrumentation(agent.getInstrumentation());
 
             BoardCAR last = (BoardCAR) search.getGoalState();
-            System.out.println(last.heuristicValue());
-            last.printBoard();
-            System.out.println("\n\nTime elapsed: " + difference + "milliseconds, which are " + (difference/1e3) + " seconds.");
+
+            ArrayList<Integer> result = last.getInfo(); // result = distFinal, sol, conductores
+
+            double iniKm = (double)ini/10;
+            double endKm = (double)result.get(0)/10;
+            boolean sol = result.get(1).equals(0);
+            System.out.println(iniKm + ";" + endKm + ";" + sol + ";" + result.get(2) + ";" + (difference/1e3));
+
+            //System.out.println("\n\nTime elapsed: " + difference + "milliseconds, which are " + (difference/1e3) + " seconds.");
+            //last.printBoard();
+
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -15,19 +15,17 @@ public class SuccessorFunctionSA implements SuccessorFunction {
         BoardCAR newBoard = new BoardCAR(oldItineraries);
         Random rand = new Random();
         int c1,c2,p1,p2;
-        String s = "";
         String cfg = board.getCFG();
+        String s;
 
-        int probMoveConductor = 5;
-        int probSwap = 3;
-        if (!cfg.contains("M")) probSwap = 1;
-        else if (!cfg.contains("S")) probSwap = 101;
+        int remove = 95;
+        int swap = 40;
+        if (!cfg.contains("M")) swap = 200;
+        else if (!cfg.contains("S")) swap = 0;
 
         ArrayList<Integer> moveCond = board.getNumVacios();
         int p = rand.nextInt(100);
-
-
-        if (moveCond.size() > 0 && p%probMoveConductor==0 && cfg.contains("R")) {
+        if (moveCond.size() > 0 && p > remove && cfg.contains("R")) {
             c1 = rand.nextInt(moveCond.size());
             c1 = moveCond.get(c1);
             do {
@@ -44,7 +42,7 @@ public class SuccessorFunctionSA implements SuccessorFunction {
             p1 = rand.nextInt(oldItineraries.get(c1).size()-2) + 1;
 
 
-            if (p%probSwap == 0) {
+            if (p < swap) {
 
                 do {
                     c2 = rand.nextInt(board.getNumCond());
@@ -57,6 +55,7 @@ public class SuccessorFunctionSA implements SuccessorFunction {
 
                 newBoard.swapPassenger(c1, p1, c2, p2);
             }
+
             else {
                 do {
                     c2 = rand.nextInt(board.getNumCond());
@@ -67,7 +66,6 @@ public class SuccessorFunctionSA implements SuccessorFunction {
             }
         }
         retval.add(new Successor(s,newBoard));
-
         return retval;
     }
 
