@@ -22,7 +22,7 @@ public class BoardCAR {
         drivers = driversAt;
 
         if (cfg.contains("E")) equitableRandomInit(passengers,drivers);
-        else if (cfg.contains("D")) thomasMethod(passengers, drivers);
+        else if (cfg.contains("D")) InicializacionDesequilibrada(passengers, drivers);
 
     }
 
@@ -35,9 +35,8 @@ public class BoardCAR {
         }
     }
 
-    private void thomasMethod(Vector<Usuario> passengers, Vector<Usuario> drivers) {
+    private void InicializacionDesequilibrada(Vector<Usuario> passengers, Vector<Usuario> drivers) {
         int n = drivers.size()/2;
-        int each = passengers.size()/n;
 
         for (int i = 0; i < drivers.size(); i++) {
             itineraries.add(new ArrayList<>());
@@ -47,29 +46,6 @@ public class BoardCAR {
                 itineraries.get(i%n+n).add(passengers.get(i));
                 itineraries.get(i%n+n).add(passengers.get(i));
         }
-        for (int i = 0; i < drivers.size(); i++) itineraries.get(i).add(drivers.get(i));
-    }
-
-    private void equitableInit(Vector<Usuario> passengers, Vector<Usuario> drivers) {
-        int each = passengers.size()/drivers.size();
-        int n = 0;
-        for (int i = 0; i < drivers.size(); i++) {
-            itineraries.add(new ArrayList<>());
-            itineraries.get(i).add(drivers.get(i));
-            for (int j = 0; j < each; j++) {
-                itineraries.get(i).add(passengers.get(n));
-                itineraries.get(i).add(passengers.get(n));
-                n++;
-            }
-        }
-
-        int c = 0;
-        while (n < passengers.size()) {
-            itineraries.get(c).add(1,passengers.get(n));
-            itineraries.get(c).add(2,passengers.get(n));
-            c++;
-        }
-
         for (int i = 0; i < drivers.size(); i++) itineraries.get(i).add(drivers.get(i));
     }
 
@@ -105,9 +81,6 @@ public class BoardCAR {
     }
 
     public void swapPassenger(int condI, int pasI, int condJ, int pasJ) {
-
-        //System.out.println("Swap C" + condI + " P" + pasI + " with C" + condJ + " P" + pasJ);
-
         Usuario usI = itineraries.get(condI).get(pasI);
         itineraries.get(condI).remove(usI);
         itineraries.get(condI).remove(usI);
@@ -116,14 +89,16 @@ public class BoardCAR {
         itineraries.get(condJ).remove(usJ);
         itineraries.get(condJ).remove(usJ);
 
-        // condI rajoute pasJ
         insertPassenger(condI,usJ);
-
-        // condJ rajoute pasI
         insertPassenger(condJ,usI);
+    }
 
+    public void movePassenger(int condI, int pasI, int condJ) {
+        Usuario usI = itineraries.get(condI).get(pasI);
+        itineraries.get(condI).remove(usI);
+        itineraries.get(condI).remove(usI);
 
-        //System.out.println("Heuristic value: " + this.heuristicValue());
+        insertPassenger(condJ,usI);
     }
 
     public void insertPassenger(int cond, Usuario u) {
@@ -198,24 +173,15 @@ public class BoardCAR {
         itineraries.get(cond).add(solIdxFi,u);
     }
 
-    public void movePassenger(int condI, int pasI, int condJ) {
 
-        //System.out.println("Move P" + pasI + " from C" + condI + "  to C" + condJ);
+    // HEURISTIC FUNCTION
 
-        Usuario usI = itineraries.get(condI).get(pasI);
-        itineraries.get(condI).remove(usI);
-        itineraries.get(condI).remove(usI);
-
-        insertPassenger(condJ,usI);
-
-        //System.out.println("Heuristic value: " + this.heuristicValue());
-    }
-
+    // Method to choose wich heuristic function is used
     public double heuristicValue() {
-        return hf43();
+        return heuristicoB();
     }
 
-    private double hfAntonio() { // (SMRE: 992.8 - 37) (lo demás es inutil)
+    private double heuristicoT1() {
         double sum = 0;
         int ncond = getNumCond();
         for (int i = 0; i < itineraries.size(); i++) {
@@ -225,7 +191,7 @@ public class BoardCAR {
         return sum*ncond;
     }
 
-    private double hfAntonio2() { // (SMRE: 985.4 - 35) (MRE: 1207.2km - 45) (SMRD 1254.8 - 47) (MRD: 1313.1 - 48)
+    private double heuristicoD() {
         double sum = 0;
         int ncond = getNumCond();
         for (int i = 0; i < itineraries.size(); i++) {
@@ -235,7 +201,7 @@ public class BoardCAR {
         return sum*ncond;
     }
 
-    private double hfAntonio3() { // (SMRE: 985.4 - 35) (MRE: 1207.2km - 45) (SMRD 1254.8 - 47) (MRD: 1313.1 - 48)
+    private double heuristicoT2() {
         double sum = 0;
         int ncond = getNumCond();
         for (int i = 0; i < itineraries.size(); i++) {
@@ -247,7 +213,7 @@ public class BoardCAR {
         return sum*ncond;
     }
 
-    private double hfEntrega() { // (SMRE: 993.7 - 27) (resto muy malos)
+    private double heuristicoA() {
         double sum = 0;
         for (int i = 0; i < itineraries.size(); i++) { // 9618 28
             double dist = computeDistance(i);
@@ -256,7 +222,7 @@ public class BoardCAR {
         return sum;
     }
 
-    private double hf43() { // (SMRE: 996.4 - 37) (MRE: 1207.2 - 45) (SMRD: 1253 - 47) (MRD: 1328.1 - 49)
+    private double heuristicoB() {
         double sum = 0;
         int ncond = getNumCond();
         for (int i = 0; i < itineraries.size(); i++) {
@@ -266,7 +232,7 @@ public class BoardCAR {
         return sum;
     }
 
-    private double hfThomasMethod() { // (SMRE y MRE muy malos) (SMRD: ) (MRD: )
+    private double heuristicoT3() {
         double sum = 0;
         int ncond = getNumCond();
         for (int i = 0; i < itineraries.size(); i++) {
@@ -310,8 +276,6 @@ public class BoardCAR {
     public ArrayList<ArrayList<Usuario>> getItineraries() {
         return itineraries;
     }
-
-    //(abs(p1.get(0) - p2.get(0)) + abs(p1.get(1) - p2.get(1)));
 
     public int computeAllDistance() {
         int sum = 0;
@@ -369,11 +333,9 @@ public class BoardCAR {
                 for (int j = 0; j < itineraries.get(i).size(); j++) {
                     Usuario current = itineraries.get(i).get(j);
                     if (car.indexOf(current) != -1) {
-                        // mode destino
                         if (bigInput) System.out.print(getUserIdentity(current) + "-[" + current.getCoordOrigenX() + "," + current.getCoordOrigenY() + "] ");
                         car.remove(current);
                     } else {
-                        // mode origen
                         if (bigInput) System.out.print(getUserIdentity(current) + "-[" + current.getCoordDestinoX() + "," + current.getCoordDestinoY() + "] ");
                         car.add(current);
                     }
@@ -389,6 +351,7 @@ public class BoardCAR {
         System.out.println("above 300: " + contador + ", car Size Exceeded: " + aboveCarSize);
     }
 
+    // Output para los Experimentos
     public ArrayList<Integer> getInfo() {
         int sum = 0;
 

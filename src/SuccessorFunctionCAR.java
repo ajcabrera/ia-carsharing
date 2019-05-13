@@ -16,8 +16,6 @@ public class SuccessorFunctionCAR implements SuccessorFunction {
 
         String cfg = board.getCFG();
 
-        // Comentar los if heuristic value
-
         // swap Operator
         if (cfg.contains("S")) {
             for (int ci = 0; ci < oldItineraries.size(); ci++) {

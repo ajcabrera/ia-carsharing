@@ -66,21 +66,21 @@ public class DemoCAR {
             long end_time = System.nanoTime();
             double difference = (end_time-start_time) / 1e6;
 
+            System.out.println();
             printActions(agent.getActions());
             printInstrumentation(agent.getInstrumentation());
 
             BoardCAR last = (BoardCAR) search.getGoalState();
 
-            ArrayList<Integer> result = last.getInfo(); // result = distFinal, sol, conductores
-
+            /*
+            ArrayList<Integer> result = last.getInfo();
             double iniKm = (double)ini/10;
             double endKm = (double)result.get(0)/10;
             boolean sol = result.get(1).equals(0);
             System.out.println(iniKm + ";" + endKm + ";" + sol + ";" + result.get(2) + ";" + (difference/1e3));
-
-
-            //System.out.println("\n\nTime elapsed: " + difference + "milliseconds, which are " + (difference/1e3) + " seconds.");
+            */
             last.printBoard();
+            System.out.println("\n\nTime elapsed: " + difference + "milliseconds, which are " + (difference/1e3) + " seconds.");
 
         } catch (Exception e) {
             Cout("Exception");
@@ -100,20 +100,20 @@ public class DemoCAR {
             double difference = (end_time-start_time) / 1e6;
 
             System.out.println();
-            printActions(agent.getActions());
-            printInstrumentation(agent.getInstrumentation());
+            //printActions(agent.getActions());
+            //printInstrumentation(agent.getInstrumentation());
 
             BoardCAR last = (BoardCAR) search.getGoalState();
 
+            /*
             ArrayList<Integer> result = last.getInfo(); // result = distFinal, sol, conductores
-
             double iniKm = (double)ini/10;
             double endKm = (double)result.get(0)/10;
             boolean sol = result.get(1).equals(0);
             System.out.println(iniKm + ";" + endKm + ";" + sol + ";" + result.get(2) + ";" + (difference/1e3));
-
-            //System.out.println("\n\nTime elapsed: " + difference + "milliseconds, which are " + (difference/1e3) + " seconds.");
+            */
             last.printBoard();
+            System.out.println("\n\nTime elapsed: " + difference + "milliseconds, which are " + (difference/1e3) + " seconds.");
 
         } catch (Exception e) {
             e.printStackTrace();
